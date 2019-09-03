@@ -89,32 +89,6 @@ def Kernels(nmKernel):
 
     return kernel
 
-def ROI(imagen):
-
-    h, w = imagen.shape
-    roi_img = np.zeros((h,w))
-
-    for i in range(3, w - 3):
-        for j in range(3, h - 3):
-
-            if imagen[j][i]==0:
-                continue 
-
-            select = imagen[j - 3 : j + 4, i - 3 : i + 4] * Kernels("delimitar")
-
-            T = sum(sum(select))
-            T1 = sum(sum(select[1 : 6, 1 : 6]))
-            # 4.5*255 > T
-            if ( 4*255 > T or 11*255 < T1 ):
-#            if ( 4.5*255 > T and T>0) or 9*255 < T1 :
-                roi_img[j, i] = 0
-            elif -7*255 == T  :
-                roi_img[j, i] = 255
-            else:
-                roi_img[j, i] = 255
-
-    return roi_img        
-
 def histogram(axisX, X, axisY, Y):
 
     # Graphics using Pyplot of Matplotlib
