@@ -9,17 +9,10 @@ import csv
 
 class Preprocesamiento():
 
-    def __init__(self,manual=False, thresh=63,y_T=200,y_B=500,x_R=300,x_L=450,prom=1):
-        self.y_T = y_T
-        self.y_B = y_B
-        self.x_R = x_R
-        self.x_L = x_L
+    def __init__(self,manual=False,thresh=63, grafica = False):
         self.thresh = thresh
-        
-        self.prom = prom
+        self.grafica = grafica
         self.manual=manual
-        self.dies = 0 
-        self.first_img = True
         self.inicio()
         self.Preprocesing()
 
@@ -95,158 +88,128 @@ class Preprocesamiento():
         return kernel
 
 
-    def histogram(axisX, X, axisY, Y):
+    def histogram(self):
 
-        # Graphics using Pyplot of Matplotlib
         plt.figure(figsize=(2,2))
 
         plt.subplot(121)
         plt.title("EjeX")
-        plt.plot(X, axisX)
+        plt.plot(self.X, self.ejeX)
 
         plt.subplot(122)
         plt.title("EjeY")
-        plt.plot(Y, axisY)
+        plt.plot(self.Y, self.ejeY)
 
         plt.show()
 
 
-
     def imprimir(self,img):
         h,w = np.shape(img)
-
+        
         for i in range(0,h):
             for j in range(0,w):
                 print(img[i][j],end=" ")
 
             print("\n")
 
+    def firstImage(self):
+
+        gray_f = cv2.imread(self.imagePaths[0],0)
+        self.h,self.w = np.shape(gray_f)
+
+        print(self.h,self.w)
+
+        if self.manual == False:
+
+            self.ejeX, self.X, self.x_L, self.x_R = self.graficX(gray_f, self.w)
+            self.ejeY, self.Y, self.y_T, self.y_B = self.graficY(gray_f, self.h)
+            self.firstImg = self.cutImg(gray_f)
+
+#            self.histogram()
+
+        else:
+            r = cv2.selectROI(gray_f)
+            self.y_T = int(r[1])
+            self.y_B = int(r[1]+r[3])
+            self.x_L = int(r[0])
+            self.x_R = int(r[0]+r[2])
+
+#            self.firstImg = gray_f[self.y_T: self.y_B + self.h//2, self.x_L: self.x_R + self.w//2]
+            self.firstImg = gray_f[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
+
+        self.firstImg = np.float32(self.firstImg)
+        self.firstImg = cv2.GaussianBlur(self.firstImg,(3,3),0)
+# Gaussian
+
+    def Graficar(self,name,img):
+
+        cv2.imshow("{}".format(name),img)
+        
+    def cutImg(self,img):
+
+        return img[self.y_T: self.y_B, self.x_L: self.x_R]
+
+    def ReducBits(self,img):
+        img = np.float32(img)
+
+        funcG = img - self.firstImg
+        g_m = funcG - min(funcG.flatten())
+        g_s = self.thresh*(g_m/max(g_m.flatten()))
+        g_s = np.uint8(g_s)
+
+        return g_s
 
     def Preprocesing(self):
-        listthresh = []
+        self.firstImage()
 
         for imagePath in self.imagePaths:
             img = cv2.imread(imagePath)
             gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-
             gray = cv2.GaussianBlur(gray,(3,3),0)
-            h,w = np.shape(gray)
+
+#            h,w = np.shape(gray)
     
-            if self.manual == True:
+            gray_copy = self.cutImg(gray)
+            secondgray =self.cutImg(gray)
+            #gray[y_T:y_B,x_R:x_L]
 
-                    firstImg = 0
-
-                    while self.dies < self.prom:
-
-                        img = cv2.imread(self.imagePaths[self.dies],0)
-
-                        gray = cv2.GaussianBlur(gray,(3,3),0)
-
-                        firstImg += gray[self.y_T:self.y_B,self.x_R:self.x_L]
-
-                        firstImg = np.float32(firstImg)
-
- #                       g_mf = firstImg - min(firstImg.flatten())
-  #                      g_sf = self.thresh*(g_mf/max(g_mf.flatten()))
-
-   #                     firstImg = np.uint8(firstImg)
-
-                        #cv2.imshow("Imadsray", firstImg)
-                        #k = cv2.waitKey(0) & 0xFF
-                        #if k == ord("q"):
-                         #   break
-                        
-                        #print(dies)
-                        self.dies+=1
-
-                    
-            else:
-
-                if self.first_img == True:
-
-                    firstImg = 0
-
-                    while self.dies < self.prom:
-
-                        img_f = cv2.imread(self.imagePaths[self.dies])
-                        gray_f = cv2.cvtColor(img_f, cv2.COLOR_RGB2GRAY)
-
-                        gray_f = cv2.GaussianBlur(gray,(3,3),0)
-
-                        if self.first_img == True:
-
-                            ejeX, X, x_L, x_R = self.graficX(gray_f, w)
-                            ejeY, Y, y_T, y_B = self.graficY(gray_f, h)
-
-                     
-                            self.first_img = False
-
-                        firstImg += gray_f[y_T: y_B + h//2 , x_L : x_R + w//2 ]
-
-#                        cv2.imshow("Imadsray", firstImg)
- #                       k = cv2.waitKey(0) & 0xFF
-  #                      if k == ord("q"):
-   #                         break
-
-                        
-                        print(self.dies)
-                        self.dies+=1
-
-                    continue
-                    
-
-            if self.manual == True:
-                gray_copy = gray[self.y_T:self.y_B,self.x_R:self.x_L]
-                secondgray = gray[self.y_T:self.y_B,self.x_R:self.x_L]
-            else:
-                gray_copy = gray[y_T  : y_B + h//2 , x_L : x_R + w//2 ]
-                secondgray = gray[y_T : y_B + h//2 , x_L : x_R + w//2 ]
-
-            secondgray = np.float32(secondgray)
-            
-            funcG = secondgray - firstImg
-            
-            #cv2.imshow("mdg", gray_copy)
-
-            g_m = funcG - min(funcG.flatten())
-            g_s = self.thresh*(g_m/max(g_m.flatten()))
-            g_s = np.uint8(g_s)
+            g_s = self.ReducBits(secondgray)
+           #Rango 40 - 50
+            n,nelson = cv2.threshold(g_s,0,255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
 
-            gray_th = cv2.GaussianBlur(g_s,(3,3),0)
-            #n,gray_th = cv2.threshold(g_s,0,255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)
-            #listthresh.append(n)
-            #thresh = np.max(listthresh)
+            ret,gray_th = cv2.threshold(g_s,50,255,cv2.THRESH_BINARY)
 
-
-            #if n < 40:
-            #firstImg = secondgray
-            ret,gray_th = cv2.threshold(g_s,45,255,cv2.THRESH_BINARY)
-
-            
             EE1 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3,3))
             EE2 = cv2.getStructuringElement(cv2.MORPH_CROSS, (3,3))
             EE3 = cv2.getStructuringElement(cv2.MORPH_RECT, (3,3))
             
-            ee61 = cv2.morphologyEx(gray_th, cv2.MORPH_OPEN, EE3, iterations = 1)  
-            ee64 = cv2.morphologyEx(ee61, cv2.MORPH_DILATE, EE1, iterations = 2)  
-            
-            cv2.imshow("Threshold", gray_th)
-            cv2.imshow("Apertura", ee61)
-            cv2.imshow("Dilatación", ee64)
-
+#            ee60 = cv2.morphologyEx(gray_th, cv2.MORPH_ERODE, EE1, iterations = 1)  
+ #           ee60 = cv2.morphologyEx(gray_th, cv2.MORPH_DILATE, EE1, iterations = 1)  
+ #No funciona elieminar el objeto  ee61 = cv2.morphologyEx(gray_th, cv2.MORPH_OPEN, EE3, iterations = 1)  
+            ee62 = cv2.morphologyEx(gray_th, cv2.MORPH_CLOSE, EE1, iterations = 1)  
+            ee62 = cv2.morphologyEx(ee62, cv2.MORPH_ERODE, EE2, iterations = 1)  
+            ee64 = cv2.morphologyEx(ee62, cv2.MORPH_DILATE, EE1, iterations = 3)
 
             mask = cv2.bitwise_and(gray_copy, gray_copy, mask=ee64)
- #           cv2.imwrite("{}tiff".format(imagePath[:-4]), mask)
-           # cv2.imshow("Mascara", mask)
 
-            print(ee64.shape)
-            k = cv2.waitKey(0) & 0xFF
-            if k == ord("q"):
-                break
+            if self.grafica == True:
+
+#                self.Graficar("ee60",ee60)
+#                self.Graficar("ee61",ee61)
+                self.Graficar("ee62",ee62)
+#                self.Graficar("threshold",gray_th)
+                self.Graficar("Mascara", mask)
+                k = cv2.waitKey(0) & 0xFF
+                if k == ord("q"):
+                    break
+
+            cv2.imwrite("{}tiff".format(imagePath[:-4]), mask)
+            print(imagePath)
 
 if __name__=="__main__":
     
-    artemia = Preprocesamiento(thresh=64, prom=1)
+    artemia = Preprocesamiento(manual=True, thresh=64, grafica = False)
+    # Probar con thresh = 32 y threshold=20
     cv2.destroyAllWindows()
 
