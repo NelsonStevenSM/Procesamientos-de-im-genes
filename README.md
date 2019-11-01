@@ -1,1 +1,1 @@
-# Procesamientos-de-im-genes
+# Proyecto de procesamientos de imágenes
