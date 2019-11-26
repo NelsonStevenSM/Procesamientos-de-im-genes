@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 import imutils
 import time
+import os
 import cv2
 from imutils import paths
 import csv
@@ -24,11 +25,10 @@ count_frame=0
 
 #filename = "{}.csv".format(imagePath.split('/')[2])
 #filename = "{}.csv".format(args['dataset'].strip(".tiff").split('/')[-1])
-filename = "{}.csv".format("N"+args['dataset'].split('/')[-1])
+filename = "{}.csv".format("N"+args['dataset'].split('/')[-2])
 #if False:
 with open(filename, mode = 'w') as dataFile:
     data = csv.writer(dataFile, delimiter=',', quotechar='\t')
-
 
     for imagePath in imagePaths:
         count_frame+=1
@@ -76,10 +76,33 @@ with open(filename, mode = 'w') as dataFile:
 
         #if key == ord("q"):
          #       break
-        cv2.imwrite("{}tiff".format(imagePath[:-4]), frame)
+#        cv2.imwrite("{}tiff".format(imagePath[:-4]), frame)
         print(number)
         number+=1
-            
+
+
+    dataFile.close()
+
 print(filename)
+
+header = list(objects.keys())
+
+string = 'frame,' + 'imagen'
+for i in header:
+
+    string += ",id{0},x{0},y{0}".format(i)
+
+
+command = "echo | awk \'BEGIN {0}print \"{1}\"{2} {0}print $0{2}\' {3} >> Mod_{3}".format("{",string,"}", filename)
+
+print(command)
+
+os.system(command)
+
+command = "rm {}".format(filename)
+
+os.system(command)
+
+
 cv2.destroyAllWindows()
 

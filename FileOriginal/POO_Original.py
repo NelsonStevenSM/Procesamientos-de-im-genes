@@ -8,7 +8,7 @@ import csv
 
 class Preprocesamiento():
 
-    def __init__(self,manual=False,thresh=63, grafica = False):
+    def __init__(self,manual=False,thresh=64, grafica = False):
         self.thresh = thresh
         self.grafica = grafica
         self.manual=manual
@@ -136,9 +136,8 @@ class Preprocesamiento():
 #            self.firstImg = gray_f[self.y_T: self.y_B + self.h//2, self.x_L: self.x_R + self.w//2]
             self.firstImg = gray_f[int(r[1]):int(r[1]+r[3]), int(r[0]):int(r[0]+r[2])]
 
+        self.firstImg = cv2.GaussianBlur(self.firstImg,(7,7),0)
         self.firstImg = np.float32(self.firstImg)
-        self.firstImg = cv2.GaussianBlur(self.firstImg,(3,3),0)
-# Gaussian
 
     def Graficar(self,name,img):
 
@@ -164,7 +163,7 @@ class Preprocesamiento():
         for imagePath in self.imagePaths:
             img = cv2.imread(imagePath)
             gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-            gray = cv2.GaussianBlur(gray,(3,3),0)
+            gray = cv2.GaussianBlur(gray,(9,9),0)
 
 #            h,w = np.shape(gray)
     
@@ -175,7 +174,7 @@ class Preprocesamiento():
 
             g_s = self.ReducBits(secondgray)
            #Rango 40 - 50
-            n,nelson = cv2.threshold(g_s,0,255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)
+#            n,nelson = cv2.threshold(g_s,0,255,cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
 
             ret,gray_th = cv2.threshold(g_s,50,255,cv2.THRESH_BINARY)
@@ -187,7 +186,8 @@ class Preprocesamiento():
 #            ee60 = cv2.morphologyEx(gray_th, cv2.MORPH_ERODE, EE1, iterations = 1)  
  #           ee60 = cv2.morphologyEx(gray_th, cv2.MORPH_DILATE, EE1, iterations = 1)  
  #No funciona elieminar el objeto  ee61 = cv2.morphologyEx(gray_th, cv2.MORPH_OPEN, EE3, iterations = 1)  
-            ee62 = cv2.morphologyEx(gray_th, cv2.MORPH_CLOSE, EE1, iterations = 1)  
+            ee64 = cv2.morphologyEx(gray_th, cv2.MORPH_DILATE, EE1, iterations = 1)
+            ee62 = cv2.morphologyEx(ee64, cv2.MORPH_CLOSE, EE1, iterations = 1)  
             ee62 = cv2.morphologyEx(ee62, cv2.MORPH_ERODE, EE2, iterations = 1)  
             ee64 = cv2.morphologyEx(ee62, cv2.MORPH_DILATE, EE1, iterations = 3)
 
@@ -198,7 +198,7 @@ class Preprocesamiento():
 #                self.Graficar("ee60",ee60)
 #                self.Graficar("ee61",ee61)
                 self.Graficar("ee62",ee62)
-#                self.Graficar("threshold",gray_th)
+                self.Graficar("threshold",gray_th)
                 self.Graficar("Mascara", mask)
                 k = cv2.waitKey(0) & 0xFF
                 if k == ord("q"):
