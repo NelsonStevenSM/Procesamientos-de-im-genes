@@ -8,7 +8,7 @@ import cv2
 from imutils import paths
 import csv
 
-ct = CentroidTracker(maxDisappeared = 1000)
+ct = CentroidTracker(maxDisappeared = 500)
 (H, W) = (None, None)
 
 ap = argparse.ArgumentParser()
@@ -20,14 +20,18 @@ imagePaths = list(paths.list_images(args['dataset']))
 
 imagePaths.sort()
 number= 0
+count_frame=0
 
-with open('GenerateData.csv', mode = 'w') as dataFile:
-#    data = csv.writer(dataFile, delimiter=',', quotechar='\t', quoting = csv.QUOTE_MINIMAL)
+#filename = "{}.csv".format(imagePath.split('/')[2])
+#filename = "{}.csv".format(args['dataset'].strip(".tiff").split('/')[-1])
+filename = "{}.csv".format("N"+args['dataset'].split('/')[-1])
+#if False:
+with open(filename, mode = 'w') as dataFile:
     data = csv.writer(dataFile, delimiter=',', quotechar='\t')
 
 
     for imagePath in imagePaths:
-
+        count_frame+=1
         frame = cv2.imread(imagePath,0)
 
         if W is None or H is None:
@@ -49,20 +53,22 @@ with open('GenerateData.csv', mode = 'w') as dataFile:
         row = []
         objects = ct.update(centroids)
         
-        row.append("{}".format(imagePath.split('/')[1][:8]))
+        row.append(count_frame)
+        row.append("{}".format(imagePath.strip(".tiff").split('/')[-1]))
 
-#        print(row)
-
+        print(imagePath.strip(".tiff").split('/')[-1])
+        #row.append(len(objects))
         for (objectID, centroid) in objects.items():
-
+    #            row.append(objectID is "")
+            
             text = "{}".format(objectID)
 
             cv2.putText(frame, text, (centroid[0] - 5, centroid[1] - 5),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1) 
             cv2.circle(frame, (centroid[0], centroid[1]), 2, (255, 0, 0), -1)
             row.append(objectID)
-            row.append(centroid)
-
-
+            row.append(centroid[0])
+            row.append(centroid[1])
+        
         data.writerow(row)
         
         #cv2.imshow("Frame", frame)
@@ -70,9 +76,10 @@ with open('GenerateData.csv', mode = 'w') as dataFile:
 
         #if key == ord("q"):
          #       break
-#        cv2.imwrite("{}tiff".format(imagePath[:-4]), frame)
+        cv2.imwrite("{}tiff".format(imagePath[:-4]), frame)
         print(number)
         number+=1
             
+print(filename)
 cv2.destroyAllWindows()
 

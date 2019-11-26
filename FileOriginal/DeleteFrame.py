@@ -19,7 +19,8 @@ for imagePath in  imagePaths:
     
     print(imagePath[:-4],np.mean(img.flatten()),np.std(img.flatten()))
     
-    if np.mean(img.flatten()) > 0.5  or np.mean(img.flatten()) == 0.0:
+    if np.mean(img.flatten()) > 0.85  or np.mean(img.flatten()) == 0.0:
+        
         os.remove(imagePath)
 
 

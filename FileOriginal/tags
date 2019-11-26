@@ -1,0 +1,56 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/3fdf28bc/
+CentroidTracker	centroidtracker.py	/^class CentroidTracker():$/;"	c
+Graficar	POO_Original.py	/^    def Graficar(self,name,img):$/;"	m	class:Preprocesamiento
+Kernels	POO_Original.py	/^    def Kernels(self,nmKernel):$/;"	m	class:Preprocesamiento
+LA	POO_Original.py	/^from numpy import linalg as LA$/;"	x
+Preprocesamiento	POO_Original.py	/^class Preprocesamiento():$/;"	c
+Preprocesing	POO_Original.py	/^    def Preprocesing(self):$/;"	m	class:Preprocesamiento
+ReducBits	POO_Original.py	/^    def ReducBits(self,img):$/;"	m	class:Preprocesamiento
+_	object_tracker.py	/^        _,_,_,centers = componentConnect$/;"	v
+__init__	POO_Original.py	/^    def __init__(self,manual=False,thresh=63, grafica = False):$/;"	m	class:Preprocesamiento
+__init__	centroidtracker.py	/^    def __init__(self, maxDisappeared=10):$/;"	m	class:CentroidTracker
+ap	DeleteFrame.py	/^ap = argparse.ArgumentParser()$/;"	v
+ap	object_tracker.py	/^ap = argparse.ArgumentParser()$/;"	v
+args	DeleteFrame.py	/^args = vars(ap.parse_args())$/;"	v
+args	object_tracker.py	/^args = vars(ap.parse_args())$/;"	v
+artemia	POO_Original.py	/^    artemia = Preprocesamiento(manual=True, thresh=64, grafica = False)$/;"	v
+c_x	object_tracker.py	/^            c_x = txt[0]$/;"	v
+c_y	object_tracker.py	/^            c_y = txt[1]$/;"	v
+centerList	object_tracker.py	/^        centerList = centers[1:].astype(int).tolist()$/;"	v
+centers	object_tracker.py	/^        _,_,_,centers = componentConnect$/;"	v
+centroids	object_tracker.py	/^        centroids = []$/;"	v
+componentConnect	object_tracker.py	/^        componentConnect = cv2.connectedComponentsWithStats(frame, connectivity=8)$/;"	v
+count_frame	object_tracker.py	/^count_frame=0$/;"	v
+ct	object_tracker.py	/^ct = CentroidTracker(maxDisappeared = 1000)$/;"	v
+cutImg	POO_Original.py	/^    def cutImg(self,img):$/;"	m	class:Preprocesamiento
+data	object_tracker.py	/^    data = csv.writer(dataFile, delimiter=',', quotechar='\\t')$/;"	v
+deregister	centroidtracker.py	/^    def deregister(self, objectID):$/;"	m	class:CentroidTracker
+dist	centroidtracker.py	/^from scipy.spatial import distance as dist$/;"	x
+filename	object_tracker.py	/^filename = "{}.csv".format("N"+args['dataset'].split('\/')[-1])$/;"	v
+firstImage	POO_Original.py	/^    def firstImage(self):$/;"	m	class:Preprocesamiento
+frame	object_tracker.py	/^        frame = cv2.imread(imagePath,0)$/;"	v
+graficX	POO_Original.py	/^    def graficX(self, img, w):$/;"	m	class:Preprocesamiento
+graficY	POO_Original.py	/^    def graficY(self, img, h):$/;"	m	class:Preprocesamiento
+histogram	POO_Original.py	/^    def histogram(self):$/;"	m	class:Preprocesamiento
+imagePaths	DeleteFrame.py	/^imagePaths = list(paths.list_images(args["dataset"]))$/;"	v
+imagePaths	object_tracker.py	/^imagePaths = list(paths.list_images(args['dataset']))$/;"	v
+img	DeleteFrame.py	/^    img = cv2.imread(imagePath)$/;"	v
+imprimir	POO_Original.py	/^    def imprimir(self,img):$/;"	m	class:Preprocesamiento
+inicio	POO_Original.py	/^    def inicio(self):$/;"	m	class:Preprocesamiento
+np	DeleteFrame.py	/^import numpy as np$/;"	I
+np	POO_Original.py	/^import numpy as np$/;"	I
+np	centroidtracker.py	/^import numpy as np$/;"	I
+np	object_tracker.py	/^import numpy as np$/;"	I
+number	object_tracker.py	/^number= 0$/;"	v
+objects	object_tracker.py	/^        objects = ct.update(centroids)$/;"	v
+plt	POO_Original.py	/^import matplotlib.pyplot as plt$/;"	I
+register	centroidtracker.py	/^    def register(self, centroid):$/;"	m	class:CentroidTracker
+row	object_tracker.py	/^        row = []$/;"	v
+text	object_tracker.py	/^            text = "{}".format(objectID)$/;"	v
+update	centroidtracker.py	/^    def update(self, rects):$/;"	m	class:CentroidTracker

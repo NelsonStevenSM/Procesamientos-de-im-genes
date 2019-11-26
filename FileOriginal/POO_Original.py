@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import argparse
 import csv
 
-
 class Preprocesamiento():
 
     def __init__(self,manual=False,thresh=63, grafica = False):
@@ -170,7 +169,8 @@ class Preprocesamiento():
 #            h,w = np.shape(gray)
     
             gray_copy = self.cutImg(gray)
-            secondgray =self.cutImg(gray)
+            secondgray = self.cutImg(gray)
+
             #gray[y_T:y_B,x_R:x_L]
 
             g_s = self.ReducBits(secondgray)
