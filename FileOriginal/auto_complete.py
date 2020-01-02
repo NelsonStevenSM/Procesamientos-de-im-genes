@@ -25,7 +25,7 @@ for f in File:
     dStart = {}
     dEnd = {}
 
-    with open('./DataControl/'++filename) as dataFile:
+    with open('./DataControl/'+filename) as dataFile:
         data = csv.reader(dataFile)
     
         for row in data:
